@@ -1,0 +1,126 @@
+
+# Pandoc File Converter with Rate-Limited Watcher
+
+# Array of input file extensions to monitor
+INPUT_EXTS=("tex" "typ" "md" "docx")
+
+declare -A ext_names=(["tex"]="latex" ["md"]="gfm" ["typ"]="typst" ["docx"]="docx")
+
+
+# Check if directory argument is provided
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <directory-to-watch>"
+    echo "Example: $0 ./documents"
+    exit 1
+fi
+
+TARGET_DIR="$1"
+LOCKFILE="/tmp/pandoc_watcher.lock"
+LAST_RUN_FILE="/tmp/pandoc_last_run.txt"
+MIN_RUN_INTERVAL=2  # Minimum seconds between runs (rate limiting)
+
+# Check if directory exists
+if [ ! -d "$TARGET_DIR" ]; then
+    echo "Error: Directory '$TARGET_DIR' does not exist."
+    exit 1
+fi
+
+# Create rate-limiting lock file if it doesn't exist
+# touch "$LAST_RUN_FILE"
+
+# Function to check if enough time has passed since last run
+last_run_time=0
+can_run() {
+    local current_time=$(date +%s)
+    
+    
+    local time_diff=$((current_time - last_run_time))
+    
+    if [ $time_diff -ge $MIN_RUN_INTERVAL ]; then
+        last_run_time=$(date +%s)
+        echo "Running at $last_run_time"
+        return 0  # Can run
+    else
+        return 1  # Cannot run yet
+    fi
+}
+
+# Function to convert files
+convert_file() {
+    local input_file="$1"
+    local input_ext="${input_file##*.}"
+    local base_name="${input_file%.*}"
+    
+    echo "Converting: $(basename "$input_file")"
+    INPUT_EXTS1=(${INPUT_EXTS[@]/$input_ext})
+    for ext in "${INPUT_EXTS1[@]}"; do
+        # Run your command here with $ext
+        echo "Processing extension: $base_name.$ext"
+        pandoc --from "${ext_names[$input_ext]}" --to "${ext_names[$ext]}" -o "$base_name.$ext" $input_file
+
+    done
+    echo "Synced Succesfully"
+    
+}
+
+# Function to check and process a single file
+process_file() {
+    local file="$1"
+    # echo "processing $file"
+    # Avoid processing if we're in a cooldown period
+    if can_run; then
+        convert_file "$file"
+    else
+      return
+    fi
+    
+}
+
+# Function to build the find command pattern for inotifywait
+build_pattern() {
+    local pattern=""
+    for ext in "${INPUT_EXTS[@]}"; do
+        if [ -n "$pattern" ]; then
+            pattern+="|"
+        fi
+        pattern+=".*\.$ext$"
+    done
+    echo "($pattern)"
+}
+
+# Main watcher function
+watch_directory() {
+    echo "Starting pandoc watcher in: $TARGET_DIR"
+    echo "Watching for changes to: ${INPUT_EXTS[@]}"
+    echo "Rate limit: $MIN_RUN_INTERVAL seconds between conversions"
+    echo "Press Ctrl+C to stop"
+    echo "========================================"
+    
+    # Build the regex pattern for inotifywait
+    PATTERN=$(build_pattern)
+    
+    # Check if inotifywait is available
+    if ! command -v inotifywait &> /dev/null; then
+        echo "Error: inotifywait is not installed."
+        exit 1
+    fi
+    
+    # Watch for file modifications
+    inotifywait -m -r -e modify --format "%w%f" "$TARGET_DIR" | \
+    while read changed_file; do
+        for ext in "${INPUT_EXTS[@]}"; do
+            if [[ "$changed_file" =~ \.$ext$ ]]; then
+                if [ -f "$changed_file" ]; then
+                    process_file "$changed_file"
+                fi
+                break
+            fi
+        done
+    done
+}
+
+# Trap Ctrl+C for clean exit
+trap 'echo -e "\nStopping watcher..."; exit 0' INT
+
+# Start watching
+watch_directory

@@ -1,0 +1,8 @@
+{
+  "name": "Language Independent Document Editor",
+  "short_name": "DocEditor",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2c3e50"
+}
