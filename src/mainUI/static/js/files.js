@@ -73,34 +73,28 @@ export function renderFileInfo() {
 // ─── Sidebar UI ──────────────────────────────────────────────────────────────
 // Expects a <div id="sidebar"> and a <textarea id="text-input"> in the DOM.
 // Calls window.onActiveFileChange(name) whenever the editor should switch files.
-
 export function renderSidebar() {
-  const sidebar = document.getElementById("sidebar");
+  const sidebar = document.getElementById("files-sidebar");
   if (!sidebar) return;
 
-  sidebar.innerHTML = "";
+  // Clear existing content except the static HTML structure
+  const header = sidebar.querySelector(".sidebar-header");
+  const list = sidebar.querySelector(".sidebar-list");
+  const newBtn = header.querySelector(".sidebar-new-btn");
 
-  // ── Header row ──────────────────────────────────────────
-  const header = document.createElement("div");
-  header.className = "sidebar-header";
-  header.innerHTML = `<span class="sidebar-title">Files</span>`;
-
-  const newBtn = document.createElement("button");
-  newBtn.textContent = "+ New";
-  newBtn.className = "sidebar-new-btn";
-  newBtn.addEventListener("click", () => {
+  const newBtnClone = newBtn.cloneNode(true);
+  newBtn.parentNode.replaceChild(newBtnClone, newBtn);
+  newBtnClone.addEventListener("click", () => {
+    console.log("HI");
     const name = prompt("New file name:");
     if (!name) return;
     const safeName = name.includes(".") ? name : name + ".typ";
     putFile(safeName, "");
     switchToFile(safeName);
   });
-  header.appendChild(newBtn);
-  sidebar.appendChild(header);
 
-  // ── File list ────────────────────────────────────────────
-  const list = document.createElement("ul");
-  list.className = "sidebar-list";
+  // Clear and rebuild file list
+  list.innerHTML = "";
 
   Object.keys(fileStore).forEach((name) => {
     const li = document.createElement("li");
@@ -164,10 +158,8 @@ export function renderSidebar() {
     list.appendChild(li);
   });
 
-  sidebar.appendChild(list);
   renderFileInfo();
 }
-
 // Switch the editor to a given file, saving the current textarea content first.
 export function switchToFile(name) {
   // Save current textarea → fileStore before switching

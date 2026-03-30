@@ -1,5 +1,4 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
-
 <div class="flex flex-column pa3">
   <div class="mb3" id="button-container">
     <!-- <button id="export">Export To PDF</button> -->
@@ -8,21 +7,18 @@
     <span class="b">Current state:</span> <span id="state-display">Typst</span>
     <div id="file-info"></div>
   </div>
-  <div>
-    <div class="flex">
-      <div class="pa2 ba b--black-20 w-50 mw-50" id="sidebar"></div>
-      <textarea
-        class="pa2 ba b--black-20 w-50 mw-50"
-        rows="10"
-        placeholder="Enter your text here..."
-        id="text-input"
-      ></textarea>
+  <div class="flex">
+    {% include 'mainUI/sidebar.html' %}
+    <textarea
+      class="pa2 ba b--black-20 w-50 mw-50"
+      rows="10"
+      placeholder="Enter your text here..."
+      id="text-input"
+    ></textarea>
 
-      <div class="w-50 mw-50 mh-100 overflow-y-auto" id="content"></div>
-    </div>
+    <div class="w-50 mw-50 mh-100 overflow-y-auto" id="content"></div>
   </div>
   <script type="module" src="static/js/main.js"></script>
-  <script type="module" src="static/js/typst.js"></script>
   <script type="module" src="static/js/buttons.js"></script>
 </div>
 {% endblock %}
