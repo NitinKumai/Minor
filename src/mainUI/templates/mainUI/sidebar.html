@@ -1,60 +1,144 @@
 <style>
-  .sidebar {
-    display: none;
-  }
+    /* Additional custom styles to complement Tachyons */
+    .sidebar-toggle-btn {
+        background: var(--button-group-bg);
+        border: 1px solid var(--button-group-border);
+        color: var(--regular-button-text);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-  .sidebar.active {
-    display: flex;
-  }
-  .sidebar-toggle-btn {
-    width: 50px;
-    height: 50px;
-    min-width: 50px;
-    min-height: 50px;
-    max-width: 50px;
-    max-height: 50px;
-    padding: 0;
-    margin: 0;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .sidebar-container {
-    padding: 100px;
-  }
+    .sidebar-toggle-btn:hover {
+        background: var(--regular-button-hover-bg);
+    }
+
+    .sidebar-toggle-btn.active {
+        background: var(--selection-bg);
+        color: var(--selected-button-text);
+        border-color: var(--selection-bg);
+    }
+
+    .sidebar {
+        background: var(--button-group-bg);
+        border: 1px solid var(--button-group-border);
+        border-left: none;
+        width: 300px;
+        height: 100%;
+    }
+
+    .sidebar-header {
+        border-bottom: 1px solid var(--button-group-border);
+        padding: 0.75rem 1rem;
+    }
+
+    .sidebar-title {
+        font-weight: 600;
+        color: var(--regular-button-text);
+    }
+
+    .sidebar-new-btn {
+        background: transparent;
+        border: none;
+        color: var(--regular-button-text);
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .sidebar-new-btn:hover {
+        background: var(--regular-button-hover-bg);
+        border-radius: 4px;
+    }
+
+    .sidebar-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar-list li {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--regular-button-text);
+    }
+
+    .sidebar-list li:hover {
+        background: var(--regular-button-hover-bg);
+    }
+
+    .sidebar-list li.active {
+        background: var(--selection-bg);
+        color: var(--selected-button-text);
+    }
+
+    #sidebar-content {
+        padding: 1rem;
+        color: var(--regular-button-text);
+    }
+
+    .error-item {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 0, 0, 0.1);
+        border-left: 3px solid red;
+        font-size: 0.875rem;
+    }
+
+    /* Sidebar container animation */
+    .sidebar-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .sidebar.active {
+        display: flex;
+    }
 </style>
-<div class="flex">
-  <div class="sidebar-toggle-buttons flex flex-column mw-10">
-    <button class="sidebar-toggle-btn" data-sidebar="files" title="Files">
-      📄
-    </button>
-    <button class="sidebar-toggle-btn" data-sidebar="errors" title="Errors">
-      ⚠️
-    </button>
-  </div>
 
-  <div class="sidebar-container">
-    <div id="files-sidebar" class="sidebar">
-      <div class="sidebar-header">
-        <span class="sidebar-title">Files</span>
-      <button class="sidebar-new-btn">+</button>
-      </div>
-      <ul class="sidebar-list"></ul>
+<div class="flex h-100">
+    <div class="sidebar-toggle-buttons flex flex-column mw-10">
+        <button
+            class="sidebar-toggle-btn ma1 pa2 br2"
+            data-sidebar="files"
+            title="Files"
+        >
+            📄
+        </button>
+        <button
+            class="sidebar-toggle-btn ma1 pa2 br2"
+            data-sidebar="error"
+            title="Errors"
+        >
+            ⚠️
+        </button>
     </div>
 
-    <div id="errors-sidebar" class="sidebar">
-      <div class="sidebar-header">
-        <span class="sidebar-title">Errors</span>
-      </div>
-      <div class="sidebar-content">
-        <div class="errors-list"></div>
-      </div>
-    </div>
-  </div>
+    <div class="sidebar-container relative h-100">
+        <div
+            id="files-sidebar"
+            class="sidebar flex flex-column active h-100 h-100vh"
+        >
+            <div class="sidebar-header flex justify-between items-center">
+                <span class="sidebar-title">Files</span>
+                <button class="sidebar-new-btn">+</button>
+            </div>
+            <ul class="sidebar-list overflow-auto flex-grow-1"></ul>
+        </div>
 
-  MOEowow
-    <script src="static/js/sidebar.js"></script>
-    <script type="module" src="static/js/files.js"></script>
-  </div>
+        <div id="error-sidebar" class="sidebar flex flex-column h-100 h-100vh">
+            <div class="sidebar-header">
+                <span class="sidebar-title">Errors</span>
+            </div>
+            <div id="sidebar-content" class="overflow-auto flex-grow-1"></div>
+        </div>
+    </div>
 </div>
+
+<script src="static/js/sidebar.js"></script>
+<script type="module" src="static/js/files.js"></script>
