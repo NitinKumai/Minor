@@ -37,7 +37,7 @@ body {
     flex: 1;
     padding: 10px;
     cursor: pointer;
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     align-items: center;
     z-index: 1;
@@ -119,4 +119,28 @@ body {
 .sidebar-header {
 }
 .sidebar-title {
+}
+
+#checkboxLivePreview {
+    display: none;
+}
+.switchButton {
+    position: relative;
+    width: fit-content;
+    padding: 10px 20px;
+    background-color: rgb(46, 46, 46);
+    border-radius: 50px;
+    z-index: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+#checkboxLivePreview:checked + .switchButton {
+    background-color: rgb(174, 0, 255);
+    box-shadow: 0px 0px 40px rgba(174, 0, 255, 0.438);
 }

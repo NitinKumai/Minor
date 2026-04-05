@@ -157,6 +157,9 @@ export function renderFileInfo() {
     // Show only the current file being edited
     bar.innerHTML = `<strong>${activeFile}</strong>`;
 }
+
+//───────────────────────────────────────────────────────────
+
 // ─── Sidebar UI ──────────────────────────────────────────────────────────────
 // Expects a <div id="sidebar"> and a <textarea id="text-input"> in the DOM.
 // Calls window.onActiveFileChange(name) whenever the editor should switch files.
@@ -192,68 +195,39 @@ export function renderSidebar() {
 
         // File name (click to open)
         const nameSpan = document.createElement("span");
-        nameSpan.className = "sidebar-item-name";
+        nameSpan.className = "sidebar-item-name inactive-file";
         nameSpan.textContent = name + (name === mainFile ? " ★" : "");
         nameSpan.title = "Click to open";
         nameSpan.addEventListener("click", () => switchToFile(name));
+        nameSpan.fileName = name;
 
         nameSpan.addEventListener("contextmenu", (e) => {
             console.log("context menu");
             showContextMenu(e, name);
         });
         li.appendChild(nameSpan);
-
-        // action buttons
-        // const actions = document.createElement("span");
-        // actions.className = "sidebar-item-actions";
-        //
-        // // set as main
-        // if (name !== mainFile) {
-        //     const starBtn = document.createElement("button");
-        //     starBtn.textContent = "★";
-        //     starBtn.title = "set as open file";
-        //     starBtn.addEventListener("click", (e) => {
-        //         e.stopPropagation();
-        //         setMainFile(name);
-        //         if (window.onMainFileChange) window.onMainFileChange(name);
-        //     });
-        //     actions.appendChild(starBtn);
-        // }
-        //
-        // // rename
-        // const renameBtn = document.createElement("button");
-        // renameBtn.textContent = "✎";
-        // renameBtn.title = "rename";
-        // renameBtn.addEventListener("click", (e) => {
-        //     e.stopPropagation();
-        // });
-        // actions.appendChild(renameBtn);
-        //
-        // // delete
-        // const delBtn = document.createElement("button");
-        // delBtn.textContent = "✕";
-        // delBtn.title = "delete";
-        // delBtn.addEventListener("click", (e) => {
-        //     e.stopPropagation();
-        //     if (!confirm(`delete "${name}"?`)) return;
-        //     deleteFile(name);
-        //     if (window.onActiveFileChange)
-        //         window.onActiveFileChange(activeFile);
-        // });
-        // actions.appendChild(delBtn);
-        //
-        // li.appendChild(actions);
-        // list.appendChild(li);
+        list.appendChild(li);
     });
 
     renderFileInfo();
 }
-// Switch the editor to a given file, saving the current textarea content first.
 export function switchToFile(name) {
     // Save current textarea → fileStore before switching
     const textarea = document.getElementById("text-input");
     if (textarea) fileStore[activeFile] = textarea.value;
 
+    const list = sidebar.querySelector(".sidebar-list");
+    list.querySelectorAll(".active-file").forEach((element) => {
+        element.classList.remove("active-file");
+        element.classList.add("inactive-file");
+    });
+    const newActiveFile = Array.from(list.querySelectorAll(".file")).filter(
+        (element) => element.fileName === name,
+    );
+    newActiveFile.forEach((el) => {
+        element.classList.add("active-file");
+        element.classList.remove("inactive-file");
+    });
     activeFile = name;
     renderSidebar(); // renderSidebar calls renderFileInfo internally
     renderFileInfo();

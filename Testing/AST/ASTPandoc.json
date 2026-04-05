@@ -1,0 +1,91 @@
+{
+    "pandoc-api-version": [1, 23, 1, 1],
+    "meta": {},
+    "blocks": [
+        {
+            "t": "Header",
+            "c": [
+                1,
+                ["really-cool-math", ["unnumbered"], []],
+                [
+                    { "t": "Str", "c": "Really" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Cool" },
+                    { "t": "Space" },
+                    { "t": "Str", "c": "Math" }
+                ]
+            ]
+        },
+        {
+            "t": "Para",
+            "c": [
+                { "t": "Str", "c": "Below" },
+                { "t": "Space" },
+                { "t": "Str", "c": "you’ll" },
+                { "t": "Space" },
+                { "t": "Str", "c": "find" },
+                { "t": "Space" },
+                { "t": "Str", "c": "some" },
+                { "t": "Space" },
+                { "t": "Str", "c": "really" },
+                { "t": "Space" },
+                { "t": "Str", "c": "cool" },
+                { "t": "Space" },
+                { "t": "Str", "c": "math." }
+            ]
+        },
+        {
+            "t": "Para",
+            "c": [
+                { "t": "Str", "c": "Check" },
+                { "t": "Space" },
+                { "t": "Str", "c": "it" },
+                { "t": "Space" },
+                { "t": "Str", "c": "out!" }
+            ]
+        },
+        {
+            "t": "OrderedList",
+            "c": [
+                [1, { "t": "DefaultStyle" }, { "t": "DefaultDelim" }],
+                [
+                    [
+                        {
+                            "t": "Para",
+                            "c": [
+                                { "t": "Str", "c": "Hi" },
+                                { "t": "Space" },
+                                { "t": "Str", "c": "there" }
+                            ]
+                        }
+                    ],
+                    [
+                        {
+                            "t": "Para",
+                            "c": [
+                                {
+                                    "t": "Math",
+                                    "c": [{ "t": "InlineMath" }, "e^2"]
+                                },
+                                { "t": "Space" },
+                                { "t": "Str", "c": "is" },
+                                { "t": "Space" },
+                                { "t": "Str", "c": "math" },
+                                { "t": "Space" },
+                                { "t": "Str", "c": "mode!" },
+                                { "t": "Space" },
+                                {
+                                    "t": "Math",
+                                    "c": [
+                                        { "t": "DisplayMath" },
+                                        "\\begin{bmatrix}12&3^e\\\\\\pi&0\\end{bmatrix}"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                ]
+            ]
+        }
+    ]
+}

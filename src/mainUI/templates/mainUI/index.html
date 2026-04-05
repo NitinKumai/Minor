@@ -1,8 +1,6 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 <div class="flex flex-column pa3 justify-center">
-    <div class="mb3 flex button-group center mw8" id="button-container">
-        <span class="button-selection"></span>
-    </div>
+    {% include 'mainUI/button.html' %}
     <div class="flex">
         {% include 'mainUI/sidebar.html' %}
         <div class="mw-100 mh-100 flex w-100">
@@ -17,6 +15,6 @@
         <script type="module" src="static/js/contextMenu.js"></script>
         <link rel="stylesheet" href="static/css/global.css" />
     </div>
-</div>
 
-{% include 'mainUI/Loading.html' %} {% endblock %}
+    {% include 'mainUI/Loading.html' %} {% endblock %}
+</div>
