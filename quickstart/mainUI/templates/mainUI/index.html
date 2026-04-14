@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="flex flex-column pa3 justify-center">
+    {% include 'mainUI/button.html' %}
+    <div class="flex">
+        {% include 'mainUI/sidebar.html' %}
+        <div class="mw-100 mh-100 flex w-100">
+            {% include 'mainUI/textarea.html' %}
+
+            <!-- sdfsdfsdf -->
+            {% include 'mainUI/typstContent.html' %}
+        </div>
+        <script type="module" src="static/js/main.js"></script>
+        <script type="module" src="static/js/buttons.js"></script>
+        <script type="module" src="static/js/contextMenu.js"></script>
+        <script type="module" src="static/js/HelperFunctions.js"></script>
+        <script type="module" src="static/js/PandocLoader.js"></script>
+        <link rel="stylesheet" href="static/css/global.css" />
+    </div>
+
+    {% include 'mainUI/Loading.html' %} {% endblock %}
+</div>

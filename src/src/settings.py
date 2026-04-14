@@ -36,6 +36,9 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+        'src.apps.MongoAdminConfig', # Replaces 'django.contrib.admin'
+    'src.apps.MongoAuthConfig',  # Replaces 'django.contrib.auth'
+    'src.apps.MongoContentTypesConfig', # Replaces 'django.contrib.contenttypes'
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,32 +82,29 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": {
+        "ENGINE": "django_mongodb_backend",
+        "HOST": os.environ.get("MONGO_DB_URL"),
+        "NAME": "quickstart",
+    },
 }
 
+# Database routers
+# https://docs.djangoproject.com/en/dev/ref/settings/#database-routers
+DATABASE_ROUTERS = ["django_mongodb_backend.routers.MongoRouter"]
 
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#     },
-# ]
+# Default primary key field type
+# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
+
+# DEFAULT_AUTO_FIELD = "django_mongodb_backend.fields.ObjectIdAutoField"
+
+# MIGRATION_MODULES = {
+#     "admin": "mongo_migrations.admin",
+#     "auth": "mongo_migrations.auth",
+#     "contenttypes": "mongo_migrations.contenttypes",
+# }
 #
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -137,7 +137,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # settings.py
-AUTH_USER_MODEL = 'mainUI.User'
+# AUTH_USER_MODEL = 'mainUI.User'
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = [

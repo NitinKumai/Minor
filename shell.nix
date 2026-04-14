@@ -1,22 +1,14 @@
-
 { pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
-  # List of packages to include
-  buildInputs = with pkgs; [
-    python3
-    python3Packages.pip
-    python3Packages.requests
-    typst
-    pandoc
-    inotify-tools
-    # python3Packages.os
+  buildInputs = with pkgs.python3Packages; [
+    django
+    django-ninja  # or django-rest-framework for DRF
+    psycopg2      # PostgreSQL support
+    pymongo
   ];
-
-  # Environment variables
-
-  # Shell hook - runs when you enter the shell
   shellHook = ''
-  zsh
+    if [ -f .env ]; then
+      source .env
   '';
 }

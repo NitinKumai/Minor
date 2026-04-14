@@ -236,3 +236,65 @@ export function switchToFile(name) {
 
     if (window.onActiveFileChange) window.onActiveFileChange(name);
 }
+
+// ─── Fetch initial files from server ────────────────────────
+function fetchInitialFiles() {
+    return fetch("/api/filesFetch/<projectID>")
+        .then((response) => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        })
+        .then((data) => {
+            for (const key of Object.keys(fileStore)) {
+                delete fileStore[key];
+            }
+
+            // Populate with fetched files
+            if (data.fileStore && typeof data.fileStore === "object") {
+                Object.assign(fileStore, data.fileStore);
+            }
+
+            // Update mainFile and activeFile
+            if (data.mainFile && fileStore[data.mainFile]) {
+                mainFile = data.mainFile;
+                activeFile = data.mainFile;
+            } else {
+                // Fallback to first available file
+                const firstFile = Object.keys(fileStore)[0];
+                if (firstFile) {
+                    mainFile = firstFile;
+                    activeFile = firstFile;
+                }
+            }
+
+            // Re-render UI
+            renderSidebar();
+            renderFileInfo();
+
+            // Notify other modules if callbacks exist
+            if (window.onActiveFileChange)
+                window.onActiveFileChange(activeFile);
+            if (window.onMainFileChange) window.onMainFileChange(mainFile);
+
+            // Return the updated fileStore and mainFile for chaining
+            return { fileStore, mainFile };
+        })
+        .catch((error) => {
+            console.error("Failed to fetch initial files:", error);
+            // Keep default files – no action needed
+            // Re-throw or return a rejected promise to stop further .then chains
+            throw error;
+        });
+}
+
+// ─── Execute and load the editor content on success ────────────────────────
+fetchInitialFiles()
+    .then(() => {
+        // If Success: load the content of the main file into the editor
+        while (!window.editorAPI)
+            window.editorAPI.loadValue(fileStore[mainFile]);
+    })
+    .catch((error) => {
+        // Optional: handle the error (e.g., show a user notification)
+        console.warn("Initialisation failed, editor not loaded", error);
+    });
